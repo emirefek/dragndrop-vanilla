@@ -1,3 +1,6 @@
+import { DragGesture } from "@use-gesture/vanilla";
+import { anime, moveHandler, setActive } from "./drag";
+
 export interface IContainer {
   id: string;
   title: string;
@@ -7,8 +10,23 @@ export interface IContainer {
   height: number;
 }
 
-export const moveHandler = (x: number, y: number) => {
-  console.log("move", x, y);
+export const dragHandlerAdd = (el: HTMLElement) => {
+  new DragGesture(el, ({ active, movement: [mx, my] }) => {
+    const parentContainer = el.parentElement as HTMLElement;
+    setActive(active, parentContainer as HTMLElement);
+    anime({
+      targets: parentContainer as HTMLElement,
+      translateX: active ? mx : 0,
+      translateY: my,
+      duration: active ? 0 : 1000,
+    });
+    if (!active) {
+      console.log("end", mx, my);
+      const element = parentContainer as HTMLElement;
+      element.style.transform = `translate(${0}px, ${0}px)`;
+      moveHandler(parentContainer as HTMLElement, mx, my);
+    }
+  });
 };
 
 export function printMousePos() {

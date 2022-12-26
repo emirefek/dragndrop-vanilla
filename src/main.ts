@@ -1,7 +1,6 @@
 import { DragGesture } from "@use-gesture/vanilla";
-import useWinBox from "./winbox";
-import { anime, setActive } from "./drag";
-import { IContainer, moveHandler, printMousePos } from "./containers";
+import { anime, dropHandler, moveHandler, setActive } from "./drag";
+import { IContainer, dragHandlerAdd, printMousePos } from "./containers";
 
 // Mouse Position Handler
 printMousePos();
@@ -18,8 +17,14 @@ const imageListeners = images.forEach((el) => {
       translateY: active ? my : 0,
       duration: active ? 0 : 1000,
     });
+    const parentContainer = el.parentElement as HTMLElement;
+    parentContainer.style.overflow = "visible";
+
     if (!active) {
-      console.log("end", mx, my);
+      const { x, y } = el.getBoundingClientRect();
+      dropHandler(el as HTMLElement, x + mx, y + my);
+      console.log("drop", x + mx, y + my);
+      parentContainer.style.overflow = "auto";
     }
   });
 });
@@ -27,48 +32,37 @@ const imageListeners = images.forEach((el) => {
 // when you want to remove the listener
 //gesture.destroy();
 
-// Winbox Handler
-const { create } = useWinBox();
+// Container Handler
 
 const containerNest = document.querySelector<HTMLDivElement>("#containerNest");
 if (!containerNest) throw new Error("no containerNest");
 
-const containers: IContainer[] = [];
+// const containers: IContainer[] = [];
 
-const wbContainers = containers.map((container) => {
-  return create({
-    title: container.title,
-    root: containerNest,
-    id: container.id,
-    x: container.x,
-    y: container.y,
-    width: container.width,
-    height: container.height,
-
-    onmove: moveHandler,
-    onclose(force) {
-      return !force && !confirm("Do you really want to close this window?");
-    },
-  });
+let containers = document.querySelectorAll(".container.handle");
+const containerListeners = containers.forEach((el) => {
+  const gesture = dragHandlerAdd(el as HTMLElement);
 });
 
 // Add Container Button Handler
 const addContainerBtn = document.querySelector<HTMLDivElement>("#addContainer");
 addContainerBtn?.addEventListener("click", () => {
-  const params = {
-    id: containers.length.toString(),
-    title: "container " + containers.length.toString(),
-    x: "center",
-    y: "center",
-    width: 300,
-    height: 300,
-
-    onmove: moveHandler,
-    onclose(force: any) {
-      return !force && !confirm("Do you really want to close this window?");
-    },
-  };
-  containers.push(params);
-  create(params);
   console.log("add container");
+  const container = document.createElement("div");
+  const handle = document.createElement("div");
+  const close = document.createElement("div");
+
+  container.classList.add("container", "main", "resizable");
+  handle.classList.add("container", "handle");
+  close.classList.add("container", "close");
+
+  container.appendChild(handle);
+  container.appendChild(close);
+  containerNest?.appendChild(container);
+
+  close.addEventListener("click", () => {
+    container.remove();
+  });
+
+  dragHandlerAdd(handle);
 });
