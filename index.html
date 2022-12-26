@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <link href="/style.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/gh/interactiveJS/interactiveJS@v2.0.1/src/css/interactive.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div class="xboard xleft">
+        <h2>Images</h2>
+        <p id="test">test</p>
+        <img
+          id="img1"
+          class="ximg"
+          src="https://picsum.photos/id/237/400/300"
+          alt="img1"
+          draggable="false"
+        />
+        <img
+          id="img2"
+          class="ximg"
+          src="https://picsum.photos/id/124/400/300"
+          alt="img2"
+          draggable="false"
+        />
+        <img
+          id="img3"
+          class="ximg"
+          src="https://picsum.photos/id/98/400/300"
+          alt="img3"
+          draggable="false"
+        />
+      </div>
+      <div class="xboard xright">
+        <div class="board panel">
+          <h2>Canvas</h2>
+          <button id="addContainer">+ Container</button>
+        </div>
+        <div id="containerNest"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+    <script src="https://cdn.jsdelivr.net/gh/interactiveJS/interactiveJS@v2.0.1/src/interactive.min.js"></script>
+  </body>
+</html>
